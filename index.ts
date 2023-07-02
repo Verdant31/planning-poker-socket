@@ -15,13 +15,36 @@ const io = new Server(server, {
   },
 });
 
-io.on("connection", (socket) => {
-  socket.on("joinSession", (sessionId) => {
-    socket.join(sessionId);
-  });
+type Connection = {
+  sessionId: string;
+  users: any;
+};
 
-  socket.on("send_message", (data) => {
-    socket.to(data.sessionId).emit("receive_message", data.message);
+const connections: Connection[] = [];
+
+const checkIfSessionExists = (sessionId: any) => {
+  return connections.some((connection) => connection.sessionId === sessionId);
+};
+
+io.on("connection", (socket) => {
+  socket.on("joinSession", ({ sessionId, user }) => {
+    socket.join(sessionId);
+
+    if (!checkIfSessionExists(sessionId)) {
+      connections.push({ sessionId, users: [user] });
+    } else {
+      connections.forEach((connection) => {
+        if (connection.sessionId === sessionId) {
+          connection.users.push(user);
+        }
+      });
+    }
+
+    console.log(JSON.stringify(connections));
+
+    const connection = connections.find((connection) => connection.sessionId === sessionId);
+
+    io.to(sessionId).emit("joinedSession", connection?.users);
   });
 });
 
