@@ -30,40 +30,26 @@ const initialUsersMock = [
   {
     id: "1",
     name: "John",
-    card: "1",
+    card: 5,
   },
   {
     id: "2",
     name: "Jane",
-    card: "2",
+    card: 8,
   },
   {
     id: "3",
     name: "Jack",
-    card: "3",
+    card: 5,
   },
   {
     id: "4",
     name: "Jill",
-    card: "4",
+    card: 13,
   },
 ];
 
 const connections: Connection[] = [];
-
-/* 
-connections = [
-  {
-    sessionId: "123",
-    users: [
-      {
-        id: "1",
-        name: "John",
-        card: "1"
-      }
-    ]
-  }
-] */
 
 const checkIfSessionExists = (sessionId: any) => {
   return connections.some((connection) => connection.sessionId === sessionId);
