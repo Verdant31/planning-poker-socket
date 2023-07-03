@@ -20,7 +20,50 @@ type Connection = {
   users: any;
 };
 
+type User = {
+  id: string;
+  name: string;
+  card?: number;
+};
+
+const initialUsersMock = [
+  {
+    id: "1",
+    name: "John",
+    card: "1",
+  },
+  {
+    id: "2",
+    name: "Jane",
+    card: "2",
+  },
+  {
+    id: "3",
+    name: "Jack",
+    card: "3",
+  },
+  {
+    id: "4",
+    name: "Jill",
+    card: "4",
+  },
+];
+
 const connections: Connection[] = [];
+
+/* 
+connections = [
+  {
+    sessionId: "123",
+    users: [
+      {
+        id: "1",
+        name: "John",
+        card: "1"
+      }
+    ]
+  }
+] */
 
 const checkIfSessionExists = (sessionId: any) => {
   return connections.some((connection) => connection.sessionId === sessionId);
@@ -29,9 +72,8 @@ const checkIfSessionExists = (sessionId: any) => {
 io.on("connection", (socket) => {
   socket.on("joinSession", ({ sessionId, user }) => {
     socket.join(sessionId);
-
     if (!checkIfSessionExists(sessionId)) {
-      connections.push({ sessionId, users: [user] });
+      connections.push({ sessionId, users: [...initialUsersMock, user] });
     } else {
       connections.forEach((connection) => {
         if (connection.sessionId === sessionId) {
@@ -39,12 +81,27 @@ io.on("connection", (socket) => {
         }
       });
     }
-
-    console.log(JSON.stringify(connections));
-
     const connection = connections.find((connection) => connection.sessionId === sessionId);
-
     io.to(sessionId).emit("joinedSession", connection?.users);
+  });
+
+  socket.on("chooseCard", ({ sessionId, userId, card }) => {
+    const connection = connections.find((connection) => connection.sessionId === sessionId);
+    const user = connection?.users.find((user: User) => user.id === userId);
+    user!.card = card;
+    io.to(sessionId).emit("cardChosen", connection?.users);
+  });
+
+  socket.on("resetGame", ({ sessionId }) => {
+    const connection = connections.find((connection) => connection.sessionId === sessionId);
+    connection!.users.forEach((user: User) => {
+      user.card = undefined;
+    });
+    io.to(sessionId).emit("gameReset", connection?.users);
+  });
+
+  socket.on("revealCards", ({ sessionId }) => {
+    io.to(sessionId).emit("cardsReveal", true);
   });
 });
 
