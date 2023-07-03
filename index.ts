@@ -58,6 +58,15 @@ const checkIfSessionExists = (sessionId: any) => {
 io.on("connection", (socket) => {
   socket.on("joinSession", ({ sessionId, user }) => {
     socket.join(sessionId);
+    console.log("OPA SESSAO JA EXISTE");
+    if (checkIfSessionExists(sessionId)) {
+      const connection = connections.find((connection) => connection.sessionId === sessionId);
+      const user = connection?.users.find((connected: User) => user.id === connected.id);
+      if (user) {
+        io.to(sessionId).emit("joinedSession", connection?.users);
+        return;
+      }
+    }
     if (!checkIfSessionExists(sessionId)) {
       connections.push({ sessionId, users: [...initialUsersMock, user] });
     } else {
