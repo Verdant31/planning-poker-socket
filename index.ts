@@ -62,7 +62,7 @@ io.on("connection", (socket) => {
       const connection = connections.find((connection) => connection.sessionId === sessionId);
       const userExists = connection?.users.find((connected: User) => user.id === connected.id);
       if (userExists) {
-        io.to(sessionId).emit("joinedSession", connection?.users);
+        io.to(sessionId).emit("joinedSession", { users: connection?.users, newUser: { ...user } });
         return;
       }
     }
@@ -76,7 +76,7 @@ io.on("connection", (socket) => {
       });
     }
     const connection = connections.find((connection) => connection.sessionId === sessionId);
-    io.to(sessionId).emit("joinedSession", connection?.users);
+    io.to(sessionId).emit("joinedSession", { users: connection?.users, newUser: { ...user } });
   });
 
   socket.on("chooseCard", ({ sessionId, userId, card }) => {
@@ -96,6 +96,12 @@ io.on("connection", (socket) => {
 
   socket.on("revealCards", ({ sessionId }) => {
     io.to(sessionId).emit("cardsReveal", true);
+  });
+
+  socket.on("userExited", ({ sessionId, user }) => {
+    const connection = connections.find((connection) => connection.sessionId === sessionId);
+    connection!.users = connection!.users.filter((connected: User) => connected.id !== user.id);
+    io.to(sessionId).emit("userLeft", { users: connection?.users, leftUser: { ...user } });
   });
 });
 
