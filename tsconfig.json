@@ -6,8 +6,8 @@
       "es6"
     ],
     "allowJs": true,
-    "outDir": "build",
-    "rootDir": "src",
+    "outDir": "",
+    "rootDir": "",
     "strict": true,
     "noImplicitAny": true,
     "esModuleInterop": true,
