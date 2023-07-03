@@ -26,28 +26,28 @@ type User = {
   card?: number;
 };
 
-const initialUsersMock = [
-  {
-    id: "1",
-    name: "John",
-    card: 5,
-  },
-  {
-    id: "2",
-    name: "Jane",
-    card: 8,
-  },
-  {
-    id: "3",
-    name: "Jack",
-    card: 5,
-  },
-  {
-    id: "4",
-    name: "Jill",
-    card: 13,
-  },
-];
+// const initialUsersMock = [
+//   {
+//     id: "1",
+//     name: "John",
+//     card: 5,
+//   },
+//   {
+//     id: "2",
+//     name: "Jane",
+//     card: 8,
+//   },
+//   {
+//     id: "3",
+//     name: "Jack",
+//     card: 5,
+//   },
+//   {
+//     id: "4",
+//     name: "Jill",
+//     card: 13,
+//   },
+// ];
 
 const connections: Connection[] = [];
 
@@ -67,7 +67,7 @@ io.on("connection", (socket) => {
       }
     }
     if (!checkIfSessionExists(sessionId)) {
-      connections.push({ sessionId, users: [...initialUsersMock, user] });
+      connections.push({ sessionId, users: [user] });
     } else {
       connections.forEach((connection) => {
         if (connection.sessionId === sessionId) {
