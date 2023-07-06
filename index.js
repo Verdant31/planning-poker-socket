@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -50,7 +61,7 @@ io.on("connection", function (socket) {
             var connection_1 = connections.find(function (connection) { return connection.sessionId === sessionId; });
             var userExists = connection_1 === null || connection_1 === void 0 ? void 0 : connection_1.users.find(function (connected) { return user.id === connected.id; });
             if (userExists) {
-                io.to(sessionId).emit("joinedSession", connection_1 === null || connection_1 === void 0 ? void 0 : connection_1.users);
+                io.to(sessionId).emit("joinedSession", { users: connection_1 === null || connection_1 === void 0 ? void 0 : connection_1.users, newUser: __assign({}, user) });
                 return;
             }
         }
@@ -65,7 +76,7 @@ io.on("connection", function (socket) {
             });
         }
         var connection = connections.find(function (connection) { return connection.sessionId === sessionId; });
-        io.to(sessionId).emit("joinedSession", connection === null || connection === void 0 ? void 0 : connection.users);
+        io.to(sessionId).emit("joinedSession", { users: connection === null || connection === void 0 ? void 0 : connection.users, newUser: __assign({}, user) });
     });
     socket.on("chooseCard", function (_a) {
         var sessionId = _a.sessionId, userId = _a.userId, card = _a.card;
@@ -85,6 +96,12 @@ io.on("connection", function (socket) {
     socket.on("revealCards", function (_a) {
         var sessionId = _a.sessionId;
         io.to(sessionId).emit("cardsReveal", true);
+    });
+    socket.on("userExited", function (_a) {
+        var sessionId = _a.sessionId, user = _a.user;
+        var connection = connections.find(function (connection) { return connection.sessionId === sessionId; });
+        connection.users = connection.users.filter(function (connected) { return connected.id !== user.id; });
+        io.to(sessionId).emit("userLeft", { users: connection === null || connection === void 0 ? void 0 : connection.users, leftUser: __assign({}, user) });
     });
 });
 server.listen(3001, function () {
