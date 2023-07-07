@@ -104,6 +104,9 @@ io.on("connection", function (socket) {
         io.to(sessionId).emit("userLeft", { users: connection === null || connection === void 0 ? void 0 : connection.users, leftUser: __assign({}, user) });
     });
 });
+app.get("/warmup", function (req, res) {
+    res.send("Server is up and running");
+});
 server.listen(3001, function () {
     console.log("listening on *:3001");
 });
