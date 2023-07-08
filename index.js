@@ -107,6 +107,9 @@ io.on("connection", function (socket) {
 app.get("/warmup", function (req, res) {
     res.send("Server is up and running");
 });
+app.get("/sessions", function (req, res) {
+    res.send(connections);
+});
 server.listen(3001, function () {
     console.log("listening on *:3001");
 });
