@@ -59,6 +59,11 @@ $ npm start
 This software uses the following open source packages:
 
 - [Node.js](https://nodejs.org/)
+- [T3.app](https://create.t3.gg/)
+- [Socket.io](https://socket.io/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [Tanstack](https://tanstack.com/)
+
 
 ## Support
 
