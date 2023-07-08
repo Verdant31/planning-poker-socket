@@ -109,6 +109,10 @@ app.get("/warmup", (req, res) => {
   res.send("Server is up and running");
 });
 
+app.get("/sessions", (req, res) => {
+  res.send(connections);
+});
+
 server.listen(3001, () => {
   console.log("listening on *:3001");
 });
