@@ -86,6 +86,7 @@ io.on("connection", (socket) => {
   socket.on("chooseCard", ({ sessionId, userId, card }) => {
     const connection = connections.find((connection) => connection.sessionId === sessionId);
     const user = connection?.users.find((user: User) => user.id === userId);
+    if (!user) return;
     user!.card = card;
     io.to(sessionId).emit("cardChosen", connection?.users);
   });
@@ -93,6 +94,7 @@ io.on("connection", (socket) => {
   socket.on("resetGame", ({ sessionId }) => {
     const connection = connections.find((connection) => connection.sessionId === sessionId);
     connection!.users.forEach((user: User) => {
+      if (!user) return;
       user.card = undefined;
     });
     io.to(sessionId).emit("gameReset", connection?.users);
@@ -104,6 +106,7 @@ io.on("connection", (socket) => {
 
   socket.on("userExited", ({ sessionId, user }) => {
     const connection = connections.find((connection) => connection.sessionId === sessionId);
+    if (!connection || !connection.users) return;
     connection!.users = connection!.users.filter((connected: User) => connected.id !== user.id);
     io.to(sessionId).emit("userLeft", { users: connection?.users, leftUser: { ...user } });
   });

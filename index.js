@@ -85,6 +85,8 @@ io.on("connection", function (socket) {
         var sessionId = _a.sessionId, userId = _a.userId, card = _a.card;
         var connection = connections.find(function (connection) { return connection.sessionId === sessionId; });
         var user = connection === null || connection === void 0 ? void 0 : connection.users.find(function (user) { return user.id === userId; });
+        if (!user)
+            return;
         user.card = card;
         io.to(sessionId).emit("cardChosen", connection === null || connection === void 0 ? void 0 : connection.users);
     });
@@ -92,6 +94,8 @@ io.on("connection", function (socket) {
         var sessionId = _a.sessionId;
         var connection = connections.find(function (connection) { return connection.sessionId === sessionId; });
         connection.users.forEach(function (user) {
+            if (!user)
+                return;
             user.card = undefined;
         });
         io.to(sessionId).emit("gameReset", connection === null || connection === void 0 ? void 0 : connection.users);
@@ -103,6 +107,8 @@ io.on("connection", function (socket) {
     socket.on("userExited", function (_a) {
         var sessionId = _a.sessionId, user = _a.user;
         var connection = connections.find(function (connection) { return connection.sessionId === sessionId; });
+        if (!connection || !connection.users)
+            return;
         connection.users = connection.users.filter(function (connected) { return connected.id !== user.id; });
         io.to(sessionId).emit("userLeft", { users: connection === null || connection === void 0 ? void 0 : connection.users, leftUser: __assign({}, user) });
     });
