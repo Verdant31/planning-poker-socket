@@ -64,7 +64,7 @@ io.on("connection", (socket) => {
     socket.join(sessionId);
     if (checkIfSessionExists(sessionId)) {
       const connection = connections.find((connection) => connection.sessionId === sessionId);
-      const userExists = connection?.users.find((connected: User) => user.id === connected.id);
+      const userExists = connection?.users && connection?.users?.find((connected: User) => user.id === connected.id);
       if (userExists) {
         io.to(sessionId).emit("joinedSession", { users: connection?.users, newUser: { ...user } });
         return;

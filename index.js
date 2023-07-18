@@ -57,11 +57,12 @@ var checkIfSessionExists = function (sessionId) {
 };
 io.on("connection", function (socket) {
     socket.on("joinSession", function (_a) {
+        var _b;
         var sessionId = _a.sessionId, user = _a.user;
         socket.join(sessionId);
         if (checkIfSessionExists(sessionId)) {
             var connection_1 = connections.find(function (connection) { return connection.sessionId === sessionId; });
-            var userExists = connection_1 === null || connection_1 === void 0 ? void 0 : connection_1.users.find(function (connected) { return user.id === connected.id; });
+            var userExists = (connection_1 === null || connection_1 === void 0 ? void 0 : connection_1.users) && ((_b = connection_1 === null || connection_1 === void 0 ? void 0 : connection_1.users) === null || _b === void 0 ? void 0 : _b.find(function (connected) { return user.id === connected.id; }));
             if (userExists) {
                 io.to(sessionId).emit("joinedSession", { users: connection_1 === null || connection_1 === void 0 ? void 0 : connection_1.users, newUser: __assign({}, user) });
                 return;
