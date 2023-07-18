@@ -4,7 +4,11 @@ import http from "http";
 import { Server } from "socket.io";
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 const server = http.createServer(app);
 

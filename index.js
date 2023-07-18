@@ -19,7 +19,9 @@ var express_1 = __importDefault(require("express"));
 var http_1 = __importDefault(require("http"));
 var socket_io_1 = require("socket.io");
 var app = (0, express_1.default)();
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: "*",
+}));
 var server = http_1.default.createServer(app);
 var io = new socket_io_1.Server(server, {
     cors: {
