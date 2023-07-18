@@ -93,6 +93,7 @@ io.on("connection", (socket) => {
 
   socket.on("resetGame", ({ sessionId }) => {
     const connection = connections.find((connection) => connection.sessionId === sessionId);
+    if (!connection || !connection.users) return;
     connection!.users.forEach((user: User) => {
       if (!user) return;
       user.card = undefined;

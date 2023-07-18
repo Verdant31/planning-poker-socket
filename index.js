@@ -93,6 +93,8 @@ io.on("connection", function (socket) {
     socket.on("resetGame", function (_a) {
         var sessionId = _a.sessionId;
         var connection = connections.find(function (connection) { return connection.sessionId === sessionId; });
+        if (!connection || !connection.users)
+            return;
         connection.users.forEach(function (user) {
             if (!user)
                 return;
